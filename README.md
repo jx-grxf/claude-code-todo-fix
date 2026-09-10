@@ -11,6 +11,7 @@
   <a href="https://github.com/jx-grxf/claude-code-todo-fix/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/jx-grxf/claude-code-todo-fix/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"><img alt="Claude Code 2.1.233+" src="https://img.shields.io/badge/Claude_Code-2.1.233%2B-D97757?logo=claude&amp;logoColor=white"></a>
   <a href="#quickstart"><img alt="Setup: 1 minute" src="https://img.shields.io/badge/setup-1_minute-2ea44f"></a>
+  <a href="#other-ways-to-install"><img alt="macOS | Linux | Windows" src="https://img.shields.io/badge/platform-macOS_%7C_Linux_%7C_Windows-informational"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
 </p>
 
@@ -40,6 +41,9 @@ halves:
 | 1 | `~/.claude/settings.json` | `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` enables the task tools again |
 | 2 | `~/.claude/CLAUDE.md` | A short rule tells Claude to load the task tools and keep the list current on multi-step work |
 
+On Windows, `~/.claude` is `%USERPROFILE%\.claude`, for example
+`C:\Users\you\.claude`.
+
 ## Affected models
 
 Claude Code decides this per model family and version: Opus 4.8 or newer, and
@@ -61,8 +65,9 @@ Sonnet, Fable or Mythos 5 or newer. Checked against Claude Code 2.1.267:
 
 ## Quickstart
 
-No clone or download needed: the prompt below contains everything. Paste it
-into Claude Code, then restart Claude Code:
+No clone or download needed: the prompt below contains everything and works on
+macOS, Linux, WSL and Windows. Paste it into Claude Code, then restart Claude
+Code:
 
 ```text
 Restore my Claude Code task list:
@@ -90,22 +95,34 @@ If you set `CLAUDE_CONFIG_DIR`, use that directory instead of `~/.claude`.
 
 ### Script
 
-If you'd rather run a script than ask an agent:
+If you'd rather run a script than ask an agent, clone the repo first:
 
 ```bash
 git clone https://github.com/jx-grxf/claude-code-todo-fix.git
 cd claude-code-todo-fix
-./install.sh
 ```
 
-Requires `python3`. Safe to run again: it only writes when something changes,
-backs up every file it touches (`*.bak-<timestamp>`), keeps symlinked dotfiles
-intact, refuses to edit an invalid `settings.json`, and respects
+Then run the installer for your system:
+
+| System | Command | Needs |
+|---|---|---|
+| macOS, Linux, WSL | `./install.sh` | Python 3 |
+| Windows (PowerShell or CMD) | `powershell -ExecutionPolicy Bypass -File .\install.ps1` | Nothing extra |
+| Windows (Git Bash) | `./install.sh` | Python 3 |
+
+`-ExecutionPolicy Bypass` applies to this one run only. Windows blocks scripts
+by default, so without it PowerShell refuses to start `install.ps1`.
+
+Both installers do the same thing and write identical files. They're safe to
+run again: they only write when something changes, back up every file they
+touch (`*.bak-<timestamp>`), keep symlinked dotfiles, line endings and a UTF-8
+byte order mark intact, refuse to edit an invalid `settings.json`, and respect
 `CLAUDE_CONFIG_DIR`.
 
 ### By hand
 
-1. Add the flag to `~/.claude/settings.json`:
+1. Add the flag to `~/.claude/settings.json` (`%USERPROFILE%\.claude\settings.json`
+   on Windows):
 
    ```json
    {
@@ -120,7 +137,9 @@ intact, refuses to edit an invalid `settings.json`, and respects
 
 ## Check that it works
 
-1. Inside Claude Code, run `! echo $CLAUDE_CODE_ENABLE_TODO_TOOLS`. It should print `1`.
+1. Inside Claude Code, run `! echo $CLAUDE_CODE_ENABLE_TODO_TOOLS`. It should
+   print `1`. On Windows without Git Bash, Claude Code runs PowerShell instead,
+   so use `! $env:CLAUDE_CODE_ENABLE_TODO_TOOLS`.
 2. Give Claude a job with a few steps, for example *"Add a `--verbose` flag,
    document it in the README and write a test for it."*
 3. A task list shows up and updates as Claude works.
@@ -178,7 +197,8 @@ tools. The flag has no effect there and the rule is harmless.
 ## Uninstall
 
 ```bash
-./uninstall.sh
+./uninstall.sh                                               # macOS, Linux, WSL, Git Bash
+powershell -ExecutionPolicy Bypass -File .\uninstall.ps1     # Windows
 ```
 
 Or remove `CLAUDE_CODE_ENABLE_TODO_TOOLS` from `settings.json` and delete the

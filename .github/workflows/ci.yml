@@ -14,14 +14,50 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: shellcheck
-        run: shellcheck install.sh uninstall.sh test/run.sh
+        run: shellcheck -x install.sh uninstall.sh lib/todo_fix.sh test/run.sh
+      - name: PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          if (-not (Get-Module -ListAvailable PSScriptAnalyzer)) {
+            Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
+          }
+          $results = Invoke-ScriptAnalyzer -Path . -Recurse -Severity Warning, Error -ExcludeRule PSAvoidUsingWriteHost
+          $results | Format-Table -AutoSize
+          if ($results) { exit 1 }
 
-  test:
+  bash:
+    name: install.sh (${{ matrix.os }})
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      # Lets Git Bash on Windows create real symlinks for the symlink test.
+      MSYS: winsymlinks:nativestrict
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install and uninstall against sandbox configs
+        shell: bash
+        run: ./test/run.sh
+
+  powershell:
+    name: install.ps1 (${{ matrix.shell }}, ${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            shell: powershell
+          - os: windows-latest
+            shell: pwsh
+          - os: ubuntu-latest
+            shell: pwsh
+          - os: macos-latest
+            shell: pwsh
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
       - name: Install and uninstall against sandbox configs
-        run: ./test/run.sh
+        shell: pwsh
+        run: ${{ matrix.shell }} -NoProfile -ExecutionPolicy Bypass -File ./test/run.ps1
