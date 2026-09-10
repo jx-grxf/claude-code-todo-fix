@@ -2,7 +2,8 @@
 
 <p align="center">
   <strong>Get the todo / task list back in Claude Code.</strong><br>
-  For Opus 4.8, Sonnet 5, Fable 5 and newer models, where Claude Code 2.1.233 turned it off.
+  For Opus 5, Opus 4.8, Sonnet 5, Fable 5.1, Fable 5, Mythos 5.1, Mythos 5 and newer models,<br>
+  where Claude Code 2.1.233 turned it off.
 </p>
 
 <p align="center">
@@ -35,9 +36,29 @@ halves:
 | 1 | `~/.claude/settings.json` | `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` enables the task tools again |
 | 2 | `~/.claude/CLAUDE.md` | A short rule tells Claude to load the task tools and keep the list current on multi-step work |
 
+## Affected models
+
+Claude Code decides this per model family and version: Opus 4.8 or newer, and
+Sonnet, Fable or Mythos 5 or newer. Checked against Claude Code 2.1.267:
+
+| Model | Model ID | Task list without this fix |
+|---|---|---|
+| Claude Opus 5 | `claude-opus-5` | ❌ off |
+| Claude Opus 4.8 | `claude-opus-4-8` | ❌ off |
+| Claude Sonnet 5 | `claude-sonnet-5` | ❌ off |
+| Claude Fable 5.1 | `claude-fable-5-1` | ❌ off |
+| Claude Fable 5 | `claude-fable-5` | ❌ off |
+| Claude Mythos 5.1 | `claude-mythos-5-1` | ❌ off |
+| Claude Mythos 5 | `claude-mythos-5` | ❌ off |
+| Any newer Opus, Sonnet, Fable or Mythos model | | ❌ off |
+| Claude Opus 4.7 and older (4.6, 4.5, 4.1, 4) | | ✅ on |
+| Claude Sonnet 4.6 and older (4.5, 4, 3.7) | | ✅ on |
+| All Claude Haiku models (4.5, 4, 3.5) | | ✅ on |
+
 ## Quickstart
 
-Paste this into Claude Code, then restart it:
+No clone or download needed: the prompt below contains everything. Paste it
+into Claude Code, then restart Claude Code:
 
 ```text
 Restore my Claude Code task list:
@@ -64,6 +85,8 @@ If you set `CLAUDE_CONFIG_DIR`, use that directory instead of `~/.claude`.
 ## Other ways to install
 
 ### Script
+
+If you'd rather run a script than ask an agent:
 
 ```bash
 git clone https://github.com/jx-grxf/claude-code-todo-fix.git
@@ -134,9 +157,9 @@ like `TaskCreate` can't be pinned from your settings.
 ### Why is my Claude Code todo list not showing anymore?
 
 Since Claude Code 2.1.233, the todo and task tools (`TodoWrite`, `TaskCreate`,
-`TaskUpdate`, `TaskList`, `TaskGet`) are turned off on Opus 4.8, Sonnet 5,
-Fable 5, Mythos 5 and newer models. Follow the [Quickstart](#quickstart) to get
-them back.
+`TaskUpdate`, `TaskList`, `TaskGet`) are turned off on Claude Opus 5, Opus 4.8,
+Sonnet 5, Fable 5.1, Fable 5, Mythos 5.1, Mythos 5 and newer models. Follow the
+[Quickstart](#quickstart) to get them back.
 
 ### I set `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` but still don't see a task list
 
@@ -145,8 +168,8 @@ own. Add the `CLAUDE.md` rule from step 2 and restart Claude Code.
 
 ### Does this change anything on older models?
 
-No. Models older than Opus 4.8 or Sonnet 5 never lost the tools. The flag has no
-effect there and the rule is harmless.
+No. Haiku models, Opus 4.7 and older, and Sonnet 4.6 and older never lost the
+tools. The flag has no effect there and the rule is harmless.
 
 ## Uninstall
 
