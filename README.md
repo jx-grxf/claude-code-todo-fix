@@ -7,6 +7,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/jx-grxf/claude-code-todo-fix/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/jx-grxf/claude-code-todo-fix"></a>
   <a href="https://github.com/jx-grxf/claude-code-todo-fix/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/jx-grxf/claude-code-todo-fix/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"><img alt="Claude Code 2.1.233+" src="https://img.shields.io/badge/Claude_Code-2.1.233%2B-D97757?logo=claude&amp;logoColor=white"></a>
   <a href="#quickstart"><img alt="Setup: 1 minute" src="https://img.shields.io/badge/setup-1_minute-2ea44f"></a>
