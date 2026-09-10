@@ -14,6 +14,9 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
 </p>
 
+> [!CAUTION]
+> Unofficial community fix, not affiliated with or endorsed by Anthropic.
+
 ## The problem
 
 Claude Code used to show a checklist that it ticked off step by step. After an
@@ -184,4 +187,4 @@ Claude Code.
 
 ---
 
-Unofficial community fix, not affiliated with Anthropic. [MIT License](LICENSE).
+[MIT License](LICENSE)
