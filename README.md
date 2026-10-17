@@ -2,8 +2,8 @@
 
 <p align="center">
   <strong>Get the todo / task list back in Claude Code.</strong><br>
-  For Opus 5, Opus 4.8, Sonnet 5, Fable 5.1, Fable 5, Mythos 5.1, Mythos 5 and newer models,<br>
-  where Claude Code 2.1.233 turned it off.
+  For Opus 5.5, Sonnet 5.5, Haiku 5.5, Opus 5, Opus 4.8, Sonnet 5, Fable 5.1, Fable 5, Mythos 5.1, Mythos 5<br>
+  and every newer model, where Claude Code turned <code>TodoWrite</code> and <code>TaskCreate</code> off.
 </p>
 
 <p align="center">
@@ -15,9 +15,10 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
 </p>
 
-> [!CAUTION]
-> Unofficial community fix, not affiliated with or endorsed by Anthropic.
-> Please Anthropic don't take down -:
+> [!NOTE]
+> Unofficial community fix, not affiliated with or endorsed by Anthropic. It
+> only uses `CLAUDE_CODE_ENABLE_TODO_TOOLS`, the opt-in that Claude Code's own
+> changelog points to, plus one rule in your `CLAUDE.md`.
 
 ## The problem
 
@@ -26,11 +27,19 @@ update it's gone: no todo list, no `TodoWrite`, no `TaskCreate`, and
 <kbd>Ctrl</kbd>+<kbd>T</kbd> shows nothing.
 
 That's intentional. From the
-[Claude Code 2.1.233 changelog](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md):
+[Claude Code changelog](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md),
+version 2.1.233:
 
 > Todo/task-tracking tools (TaskCreate/Get/Update/List, TodoWrite) are no longer
 > available on Opus 4.8, Sonnet 5, Fable 5, Mythos 5, and newer models; set
 > `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` to bring them back
+
+Version 2.1.268 turned this into an allowlist, so every model that isn't on it
+loses the list too, including Haiku 5.5:
+
+> Changed the task-tracking tools (TaskCreate/Get/Update/List, TodoWrite) to be
+> offered only on Claude 3.x, Opus 4.0–4.7, Sonnet 4.0–4.6, Haiku 4.5; set
+> `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` elsewhere
 
 Setting that variable is only half the fix. The tools come back as *deferred*
 tools: Claude sees their names but not their instructions until it loads them
@@ -47,11 +56,15 @@ On Windows, `~/.claude` is `%USERPROFILE%\.claude`, for example
 
 ## Affected models
 
-Claude Code decides this per model family and version: Opus 4.8 or newer, and
-Sonnet, Fable or Mythos 5 or newer. Checked against Claude Code 2.1.267:
+Since Claude Code 2.1.268 the task list is only on for Claude 3.x, Opus
+4.0–4.7, Sonnet 4.0–4.6 and Haiku 4.5. Every other model needs this fix.
+Checked against Claude Code 2.1.302:
 
 | Model | Model ID | Task list without this fix |
 |---|---|---|
+| Claude Opus 5.5 | `claude-opus-5-5` | ❌ off |
+| Claude Sonnet 5.5 | `claude-sonnet-5-5` | ❌ off |
+| Claude Haiku 5.5 | `claude-haiku-5-5` | ❌ off |
 | Claude Opus 5 | `claude-opus-5` | ❌ off |
 | Claude Opus 4.8 | `claude-opus-4-8` | ❌ off |
 | Claude Sonnet 5 | `claude-sonnet-5` | ❌ off |
@@ -59,10 +72,10 @@ Sonnet, Fable or Mythos 5 or newer. Checked against Claude Code 2.1.267:
 | Claude Fable 5 | `claude-fable-5` | ❌ off |
 | Claude Mythos 5.1 | `claude-mythos-5-1` | ❌ off |
 | Claude Mythos 5 | `claude-mythos-5` | ❌ off |
-| Any newer Opus, Sonnet, Fable or Mythos model | | ❌ off |
+| Any newer Opus, Sonnet, Haiku, Fable or Mythos model | | ❌ off |
 | Claude Opus 4.7 and older (4.6, 4.5, 4.1, 4) | | ✅ on |
 | Claude Sonnet 4.6 and older (4.5, 4, 3.7) | | ✅ on |
-| All Claude Haiku models (4.5, 4, 3.5) | | ✅ on |
+| Claude Haiku 4.5 and Claude 3.x models | | ✅ on |
 
 ## Quickstart
 
@@ -181,19 +194,42 @@ like `TaskCreate` can't be pinned from your settings.
 ### Why is my Claude Code todo list not showing anymore?
 
 Since Claude Code 2.1.233, the todo and task tools (`TodoWrite`, `TaskCreate`,
-`TaskUpdate`, `TaskList`, `TaskGet`) are turned off on Claude Opus 5, Opus 4.8,
-Sonnet 5, Fable 5.1, Fable 5, Mythos 5.1, Mythos 5 and newer models. Follow the
-[Quickstart](#quickstart) to get them back.
+`TaskUpdate`, `TaskList`, `TaskGet`) are turned off on Claude Opus 5.5, Sonnet
+5.5, Haiku 5.5, Opus 5, Opus 4.8, Sonnet 5, Fable 5.1, Fable 5, Mythos 5.1,
+Mythos 5 and newer models. Follow the [Quickstart](#quickstart) to get them back.
+
+### <kbd>Ctrl</kbd>+<kbd>T</kbd> shows nothing / `/todos` is empty
+
+Same cause: the model you're on doesn't get the task tools, so there is no list
+to show. After the fix, <kbd>Ctrl</kbd>+<kbd>T</kbd> toggles the list again.
+
+### "TodoWrite is not available" or "No such tool: TaskCreate"
+
+Your model isn't on Claude Code's allowlist. Set
+`CLAUDE_CODE_ENABLE_TODO_TOOLS=1` (step 1) and restart. The tools then show up
+as deferred tools and load through `ToolSearch`.
 
 ### I set `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` but still don't see a task list
 
 The tools are available again but deferred, so Claude rarely loads them on its
 own. Add the `CLAUDE.md` rule from step 2 and restart Claude Code.
 
+### My task list worked on Haiku and is gone after an update
+
+Claude Code 2.1.268 switched to an allowlist that only keeps Haiku 4.5, so
+Haiku 5.5 lost the list. The same fix brings it back.
+
 ### Does this change anything on older models?
 
-No. Haiku models, Opus 4.7 and older, and Sonnet 4.6 and older never lost the
-tools. The flag has no effect there and the rule is harmless.
+No. Claude 3.x, Opus 4.7 and older, Sonnet 4.6 and older, and Haiku 4.5 never
+lost the tools. The flag has no effect there and the rule is harmless.
+
+### Does it work with subagents and the IDE extensions?
+
+The flag is read by Claude Code itself, so it applies wherever your
+`~/.claude/settings.json` is used, including the VS Code and JetBrains
+extensions. Since 2.1.286, foreground subagents get the task tools too when the
+flag is on.
 
 ## Uninstall
 
