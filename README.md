@@ -17,6 +17,7 @@
 
 > [!CAUTION]
 > Unofficial community fix, not affiliated with or endorsed by Anthropic.
+> Please Anthropic don't take down -:
 
 ## The problem
 
