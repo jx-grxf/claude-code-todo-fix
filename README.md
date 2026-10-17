@@ -19,6 +19,7 @@
 > Unofficial community fix, not affiliated with or endorsed by Anthropic. It
 > only uses `CLAUDE_CODE_ENABLE_TODO_TOOLS`, the opt-in that Claude Code's own
 > changelog points to, plus one rule in your `CLAUDE.md`.
+> PLEASE Anthropic don't term :-
 
 ## The problem
 
